@@ -123,6 +123,12 @@ angular.module('lr.upload.iframe', []).factory('iFrameUpload', [
       }
       return -1;
     }
+    function generateInputHiddenField(value, name) {
+      var input = angular.element('<input type="hidden" />');
+      input.attr('name', name);
+      input.val(value);
+      return input;
+    }
     function iFrameUpload(config) {
       var files = [];
       var deferred = $q.defer(), promise = deferred.promise;
@@ -187,10 +193,13 @@ angular.module('lr.upload.iframe', []).factory('iFrameUpload', [
           form.append(input);
         });
         angular.forEach(config.data, function (value, name) {
-          var input = angular.element('<input type="hidden" />');
-          input.attr('name', name);
-          input.val(value);
-          form.append(input);
+          if (Array.isArray(value)) {
+            angular.forEach(value, function(item) {
+              form.append(generateInputHiddenField(item, name+'[]'));
+            });
+          } else {
+            form.append(generateInputHiddenField(value, name));
+          }
         });
         config.$iframeTransportForm = form;
         $http.pendingRequests.push(config);
