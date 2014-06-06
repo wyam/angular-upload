@@ -180,12 +180,18 @@ angular.module('lr.upload.iframe', []).factory('iFrameUpload', [
             response = transformData(response, $http.defaults.transformResponse);
           } catch (e) {
           }
-          deferred.resolve({
+          var httpResponse = {
             data: response,
-            status: 200,
-            headers: [],
+            status: response.code,
+            headers: {contentType: 'application/json'},
             config: config
-          });
+          };
+
+          if (response.code > 200 && response.code < 300) {
+            deferred.resolve(httpResponse);
+          } else {
+            deferred.reject(httpResponse);
+          }
         });
         angular.forEach(files, function (input) {
           var clone = input.clone(true);
