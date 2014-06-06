@@ -187,7 +187,7 @@ angular.module('lr.upload.iframe', []).factory('iFrameUpload', [
             config: config
           };
 
-          if (response.code > 200 && response.code < 300) {
+          if (response.code > 199 && response.code < 300) {
             deferred.resolve(httpResponse);
           } else {
             deferred.reject(httpResponse);
